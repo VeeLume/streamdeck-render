@@ -23,11 +23,15 @@ impl RenderedImage {
     }
 
     /// Encode to a plain base64 string (no `data:` URI prefix).
-    ///
-    /// The result is suitable for direct use with `streamdeck-lib`'s
-    /// `SdClient::set_image_b64(context, base64_string)`.
     pub fn to_base64(&self) -> Result<String, RenderError> {
         Ok(BASE64_STANDARD.encode(self.to_png_bytes()?))
+    }
+
+    /// Encode to a full PNG data URI (`data:image/png;base64,…`).
+    ///
+    /// Pass the result directly to `streamdeck-lib`'s `SdClient::set_image()`.
+    pub fn to_data_url(&self) -> Result<String, RenderError> {
+        Ok(format!("data:image/png;base64,{}", self.to_base64()?))
     }
 
     /// Save the image to a file. Format is inferred from the file extension.
