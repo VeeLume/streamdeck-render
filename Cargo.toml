@@ -1,0 +1,23 @@
+[package]
+name = "streamdeck-render"
+version = "0.1.0"
+edition = "2024"
+description = "Render Stream Deck button icons as PNG images with custom fonts"
+license = "MIT OR Apache-2.0"
+authors = ["Veelume"]
+
+[lib]
+name = "streamdeck_render"
+path = "src/lib.rs"
+
+[[bin]]
+name = "streamdeck-render"
+path = "src/main.rs"
+
+[dependencies]
+ab_glyph = "0.2"
+image = { version = "0.25", default-features = false, features = ["png"] }
+base64 = "0.22"
+thiserror = "2.0"
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"
