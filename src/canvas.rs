@@ -17,6 +17,11 @@ pub enum VAlign {
     #[default]
     Center,
     Bottom,
+    /// Place the first baseline at an absolute pixel Y coordinate.
+    ///
+    /// Useful for precise multi-group layouts where two `draw_text` calls at
+    /// different font sizes need to align to specific positions.
+    Baseline(f32),
 }
 
 /// Horizontal alignment of each text line within the canvas.
@@ -150,6 +155,7 @@ impl Canvas {
             VAlign::Top => ascent,
             VAlign::Center => (h - total_h) / 2.0 + ascent,
             VAlign::Bottom => h - (total_h - ascent),
+            VAlign::Baseline(y) => y,
         };
 
         for (i, line) in lines.iter().enumerate() {
@@ -189,6 +195,19 @@ impl Canvas {
             BorderStyle::Vignette { width, radius, color } => {
                 self.draw_vignette_border(*width, *radius, *color);
             }
+        }
+    }
+
+    /// Draw a 1px horizontal line across the canvas at pixel row `y`.
+    ///
+    /// Useful for separators in multi-section button layouts.
+    pub fn draw_horizontal_line(&mut self, y: u32, color: Color) {
+        if y >= self.height {
+            return;
+        }
+        for px in 0..self.width {
+            let pixel = self.buf.get_pixel_mut(px, y);
+            composite_over(pixel, color, color.a as f32 / 255.0);
         }
     }
 
